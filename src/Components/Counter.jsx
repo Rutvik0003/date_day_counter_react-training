@@ -96,6 +96,58 @@ const Text = styled.h1`
   }
 `;
 
+const InputFieldContainer = styled.div`
+  display: flex;
+  align-items: center; /* Vertically center text and input */
+  gap: 10px; /* Add spacing between text and input */
+  width: 100%;
+`;
+
+const InputField = styled.input`
+  flex: 1; /* Allow input field to grow and take available space */
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #feb47b;
+    box-shadow: 0 0 8px rgba(255, 127, 95, 0.5);
+  }
+`;
+
+const ResetBtn = styled.button`
+  height: 60px;
+  width: 200px;
+  background: linear-gradient(145deg, #6a11cb, #2575fc); /* Vibrant gradient */
+  color: white;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 30px;
+  padding: 15px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(106, 17, 203, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    transform: scale(1.1);
+    background: linear-gradient(145deg, #2575fc, #6a11cb); /* Inverted gradient */
+    box-shadow: 0 15px 25px rgba(106, 17, 203, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  }
+
+  &:active {
+    transform: scale(1.05);
+    background: linear-gradient(145deg, #4c009c, #001f5c); /* Darker gradient on press */
+    box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+`
 
 
 const Counter = () => {
@@ -108,37 +160,35 @@ const Counter = () => {
   const nextDay = nextDate.toLocaleDateString('en-US', { weekday: 'long' });
   const formattedNextDate = nextDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-  // Handlers
-  const ReduceStep = () => {
-    if (step > 0) {
-      setStep(step - 1);
-    }
-  };
-
-  const IncreaseStep = () => {
-    setStep(step + 1);
-  };
+  const handleResetBtn =()=>{
+      if(step != 0 || count != 0)
+      {
+        setStep((prevStep)=>prevStep=0);
+        setCount((prevCount)=>prevCount=0);
+      }
+  }
 
   const ReduceCount = () => {
     
-      setCount(count - 1);
+      setCount((count)=>count-1);
     
   };
 
   const IncreaseCount = () => {
-    setCount(count + 1);
+    setCount((count)=>count+1);
   };
 
   return (
     <Container>
       <BtnContainer>
-        <Smallbtn onClick={ReduceStep}>-</Smallbtn>
-        <Text>Step: {step}</Text>
-        <Smallbtn onClick={IncreaseStep}>+</Smallbtn>
+        <InputFieldContainer>
+        <Text>Step : {step}</Text>
+        <InputField type='range' min={0} max={10} value={step} onChange={(e)=>setStep(e.target.value)}/>
+        </InputFieldContainer>
       </BtnContainer>
       <BtnContainer>
         <Smallbtn onClick={ReduceCount}>-</Smallbtn>
-        <Text>Count: {count}</Text>
+        <Text>Count: <InputField type='number'value={count} onChange={(e)=>setCount(e.target.value)}/></Text>
         <Smallbtn onClick={IncreaseCount}>+</Smallbtn>
       </BtnContainer>
       <Text>
@@ -146,6 +196,8 @@ const Counter = () => {
             {step*count > 0 && `${step * count} days from today is ${nextDay}, ${formattedNextDate}.`}
             {step*count <0 && `${-1*step * count} days ago today was ${nextDay}, ${formattedNextDate}.`}
       </Text>
+      <ResetBtn onClick={handleResetBtn}>Reset</ResetBtn>
+
 
     </Container>
   );
